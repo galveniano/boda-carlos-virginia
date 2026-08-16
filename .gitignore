@@ -1,0 +1,14 @@
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# macOS
+.DS_Store
+
+# Tooling
+.vercel/
+node_modules/
+
+# Agent workspace
+.atl/

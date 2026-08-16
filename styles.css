@@ -1,0 +1,136 @@
+html {
+  /* Stop iOS from inflating text when the phone is rotated. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: #ddd4c2;
+  font-family: Jost, system-ui, sans-serif;
+  /* The layout is a fixed-width column; never let it scroll sideways. */
+  overflow-x: hidden;
+}
+
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+}
+
+/* A single phone-width column, centred on desktop, full-bleed on phones.
+   min-width:0 stops the flex item from refusing to shrink below its
+   content's intrinsic width, which is what clips it on narrow screens. */
+.invitation {
+  width: 100%;
+  max-width: 430px;
+  min-width: 0;
+  background: #f4efe6;
+  box-shadow: 0 0 44px rgba(61, 68, 54, .18);
+}
+
+/* Wax-seal band. The seal sits on top of these labels, so on the
+   narrowest phones they have to give way to keep the text readable. */
+.band-label {
+  font: 300 10px/1 Jost, sans-serif;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #f0f2e4;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .band-label {
+    font-size: 8.5px;
+    letter-spacing: .12em;
+  }
+}
+
+/* Tapping the cover opens it — it should not feel like selecting text. */
+#cover {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+#cover:focus-visible {
+  outline: 2px solid #96a67f;
+  outline-offset: -4px;
+}
+
+/* The map iframe swallows touch drags, which traps the page scroll on
+   phones. Shield it until the guest deliberately taps the map. */
+.map-shield {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.map-shield span {
+  background: rgba(117, 132, 94, .92);
+  color: #f7f5ea;
+  font: 300 9px/1 Jost, sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+}
+
+.map-shield.is-off {
+  display: none;
+}
+
+/* A mouse can drag the map without hijacking page scroll. */
+@media (hover: hover) and (pointer: fine) {
+  .map-shield {
+    display: none;
+  }
+}
+
+a {
+  color: #4c573d;
+}
+
+a:hover {
+  color: #96a67f;
+}
+
+@keyframes bdash {
+  to { stroke-dashoffset: -18; }
+}
+
+@keyframes bhook {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(12px); }
+}
+
+/* House sketch: pending parts animate their dashed outline. */
+.brick {
+  animation: bdash 1.6s linear infinite;
+}
+
+.btn-map:hover {
+  background: #657450;
+  color: #f7f5ea;
+}
+
+.btn-copy:hover {
+  background: #dfe5cc;
+  color: #4c573d;
+}
+
+/* Story photos: keep the layout intact when a file is missing. */
+.story-photo.is-missing {
+  background: repeating-linear-gradient(135deg, #efe8dc 0 6px, #e7ded0 6px 12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
