@@ -107,6 +107,11 @@ a:hover {
   50%      { transform: translateY(12px); }
 }
 
+@keyframes coverScrollCue {
+  0%, 100% { transform: translateY(0); opacity: .55; }
+  50%      { transform: translateY(5px); opacity: 1; }
+}
+
 /* House sketch: pending parts animate their dashed outline. */
 .brick {
   animation: bdash 1.6s linear infinite;

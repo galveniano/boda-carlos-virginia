@@ -11,8 +11,7 @@ const CONFIG = {
   /** Set to false to hide the bank-transfer block entirely. */
   showIban: true,
 
-  /** TODO: replace with the real account number before sharing the site. */
-  iban: 'ES12 3456 7890 1234 5678 9012',
+  iban: 'ES36 0073 0100 5109 0483 7880',
 };
 /* ------------------------------------------------------------------ */
 
@@ -64,9 +63,12 @@ function setUpCover() {
   const cover = document.getElementById('cover');
   const card = document.getElementById('cover-card');
   const hint = document.getElementById('cover-hint');
+  const scrollCue = document.getElementById('cover-scroll-cue');
   const doorLeft = document.getElementById('door-left');
   const doorRight = document.getElementById('door-right');
   const bands = document.querySelectorAll('.js-band');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let isOpen = false;
 
@@ -75,6 +77,7 @@ function setUpCover() {
     doorRight.style.transform = isOpen ? 'rotateY(168deg)' : 'rotateY(0deg)';
     card.style.transform = isOpen ? 'scale(1)' : 'scale(.94)';
     hint.style.opacity = isOpen ? '0' : '1';
+    scrollCue.style.opacity = isOpen ? '1' : '0';
 
     bands.forEach((band) => {
       band.style.transform = isOpen ? 'translateY(190px)' : 'translateY(0)';
@@ -82,19 +85,33 @@ function setUpCover() {
     });
   };
 
-  const toggle = () => {
-    isOpen = !isOpen;
-    cover.setAttribute('aria-expanded', String(isOpen));
+  /** Opens the envelope. Guests may not tap it, so this also runs on its own
+   * shortly after load — once opened there is no need to close it again. */
+  const open = () => {
+    if (isOpen) return;
+    isOpen = true;
+    cover.setAttribute('aria-expanded', 'true');
+    cover.setAttribute('aria-label', 'Invitación abierta');
     render();
   };
 
   cover.setAttribute('aria-expanded', 'false');
-  cover.addEventListener('click', toggle);
+  cover.addEventListener('click', open);
   cover.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
-    toggle();
+    open();
   });
+
+  // Reduced motion: the global stylesheet already collapses every
+  // transition to ~0s, so open right away instead of making guests wait.
+  if (prefersReducedMotion) {
+    open();
+    return;
+  }
+
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(() => setTimeout(open, 1000), () => setTimeout(open, 1000));
 }
 
 /* --------------------------- House fund --------------------------- */
@@ -161,7 +178,7 @@ function setUpIban() {
   let resetTimer;
 
   button.addEventListener('click', async () => {
-    const copied = await copyToClipboard(CONFIG.iban);
+    const copied = await copyToClipboard(CONFIG.iban.replace(/\s+/g, ''));
     button.textContent = copied ? 'Copiado' : 'Copia el número a mano';
 
     clearTimeout(resetTimer);
